@@ -5,7 +5,7 @@ module Cubic
 
     class Librato
 
-      attr_reader :client, :namespace, :source, :queue_size
+      attr_reader :client, :namespace, :source, :queue_size, :_transaction_queue
 
       class MissingConfigurationError < StandardError
         def initialize(name)
@@ -40,6 +40,14 @@ module Cubic
         val(label, duration_in_ms)
       end
 
+      def transaction
+        @_transaction_queue = ::Librato::Metrics::Queue.new
+        yield
+      ensure
+        _transaction_queue.submit
+        @_transaction_queue = nil
+      end
+
       private
 
       def submit(label, type, value)
@@ -61,7 +69,11 @@ module Cubic
       end
 
       def queue
-        @queue ||= queue_size && ::Librato::Metrics::Queue.new(autosubmit_count: queue_size)
+        _transaction_queue || long_lived_queue
+      end
+
+      def long_lived_queue
+        @long_lived_queue ||= queue_size && ::Librato::Metrics::Queue.new(autosubmit_count: queue_size)
       end
 
     end

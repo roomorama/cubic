@@ -95,12 +95,16 @@ class TestLibrato < Minitest::Test
   end
 
   class Librato::Metrics::Queue
-    attr_reader :_calls
+    attr_reader :_calls, :_submitted
 
     # overriding the `add` method to inspect its invokations.
     def add(options)
       @_calls ||= []
       _calls << options
+    end
+
+    def submit
+      @_submitted = true
     end
   end
 
@@ -115,6 +119,24 @@ class TestLibrato < Minitest::Test
       { "metric"       => { type: :counter, value: 1, source: nil } },
       { "other_metric" => { type: :gauge, value: 20, source: nil } }
     ], calls
+  end
+
+  def test_transaction
+    queue = nil
+
+    provider.transaction do
+      provider.inc("metric")
+      provider.val("other_metric", 20)
+
+      queue = provider.send(:queue)
+    end
+
+    assert_equal [
+      { "metric"       => { type: :counter, value: 1, source: nil } },
+      { "other_metric" => { type: :gauge, value: 20, source: nil } }
+    ], queue._calls
+
+    assert_equal true, queue._submitted
   end
 
 end

@@ -26,6 +26,10 @@ module Cubic
         val(label, duration_in_ms)
       end
 
+      def transaction
+        yield
+      end
+
       def query(label)
         storage[label]
       end
