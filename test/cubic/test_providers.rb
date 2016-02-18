@@ -16,6 +16,11 @@ class TestProviders < Minitest::Test
     Cubic.configuration.provider = name
   end
 
+  def test_build_null
+    provider :null
+    assert_instance_of Cubic::Providers::Null, Cubic::Providers.build(Cubic.configuration)
+  end
+
   def test_build_memory
     provider :memory
     assert_instance_of Cubic::Providers::Memory, Cubic::Providers.build(Cubic.configuration)

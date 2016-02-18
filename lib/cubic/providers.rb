@@ -1,6 +1,7 @@
 module Cubic
   module Providers
 
+    autoload :Null, "cubic/providers/null"
     autoload :Memory, "cubic/providers/memory"
     autoload :Librato, "cubic/providers/librato"
 
@@ -12,6 +13,8 @@ module Cubic
 
     def self.build(config)
       case config.provider
+      when :null
+        Null.new
       when :memory
         Memory.new
       when :librato
