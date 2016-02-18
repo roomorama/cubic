@@ -24,7 +24,7 @@ class TestLibrato < Minitest::Test
   attr_reader :provider
 
   def setup
-    @provider = Cubic::Providers::Librato.new(email: "librato@example.org", api_key: "12345")
+    @provider = Cubic::Providers::Librato.new(email: "librato@example.org", api_key: "12345", source: "test")
     Librato::Metrics.reset!
   end
 
@@ -40,18 +40,17 @@ class TestLibrato < Minitest::Test
     }
   end
 
-  def test_namespacing
-    provider = Cubic::Providers::Librato.new(email: "librato@example.org", api_key: "12345", namespace: "dev")
-    provider.inc("metric")
-
-    assert_equal [{ "dev.metric" => { type: :counter, value: 1, source: nil } }], Librato::Metrics._calls
+  def test_requires_api_source
+    assert_raises(Cubic::Providers::Librato::MissingConfigurationError) {
+      Cubic::Providers::Librato.new(email: "librato@example.org", api_key: "12345")
+    }
   end
 
-  def test_source
-    provider = Cubic::Providers::Librato.new(email: "librato@example.org", api_key: "12345", source: "m1")
+  def test_namespacing
+    provider = Cubic::Providers::Librato.new(email: "librato@example.org", api_key: "12345", source: "test", namespace: "dev")
     provider.inc("metric")
 
-    assert_equal [{ "metric" => { type: :counter, value: 1, source: "m1" } }], Librato::Metrics._calls
+    assert_equal [{ "dev.metric" => { type: :counter, value: 1, source: "test" } }], Librato::Metrics._calls
   end
 
   def test_inc
@@ -60,9 +59,9 @@ class TestLibrato < Minitest::Test
     provider.inc("metric_multiple", by: 3)
 
     assert_equal [
-      { "metric"          => { type: :counter, value: 1, source: nil } },
-      { "metric"          => { type: :counter, value: 1, source: nil } },
-      { "metric_multiple" => { type: :counter, value: 3, source: nil } }
+      { "metric"          => { type: :counter, value: 1, source: "test" } },
+      { "metric"          => { type: :counter, value: 1, source: "test" } },
+      { "metric_multiple" => { type: :counter, value: 3, source: "test" } }
     ], Librato::Metrics._calls
   end
 
@@ -72,9 +71,9 @@ class TestLibrato < Minitest::Test
     provider.val("metric", 0)
 
     assert_equal [
-      { "metric" => { type: :gauge, value: 20, source: nil } },
-      { "metric" => { type: :gauge, value: 30, source: nil } },
-      { "metric" => { type: :gauge, value: 0, source: nil } }
+      { "metric" => { type: :gauge, value: 20, source: "test" } },
+      { "metric" => { type: :gauge, value: 30, source: "test" } },
+      { "metric" => { type: :gauge, value: 0, source: "test" } }
     ], Librato::Metrics._calls
   end
 
@@ -91,7 +90,7 @@ class TestLibrato < Minitest::Test
     assert_equal "metric", name
     assert_equal :gauge, value[:type]
     assert value[:value]
-    assert_nil value[:source]
+    assert_equal "test", value[:source]
   end
 
   class Librato::Metrics::Queue
@@ -109,15 +108,15 @@ class TestLibrato < Minitest::Test
   end
 
   def test_queue
-    provider = Cubic::Providers::Librato.new(email: "librato@example.org", api_key: "12345", queue_size: 20)
+    provider = Cubic::Providers::Librato.new(email: "librato@example.org", api_key: "12345", source: "test", queue_size: 20)
 
     provider.inc("metric")
     provider.val("other_metric", 20)
     calls = provider.send(:queue)._calls
 
     assert_equal [
-      { "metric"       => { type: :counter, value: 1, source: nil } },
-      { "other_metric" => { type: :gauge, value: 20, source: nil } }
+      { "metric"       => { type: :counter, value: 1, source: "test" } },
+      { "other_metric" => { type: :gauge, value: 20, source: "test" } }
     ], calls
   end
 
@@ -132,8 +131,8 @@ class TestLibrato < Minitest::Test
     end
 
     assert_equal [
-      { "metric"       => { type: :counter, value: 1, source: nil } },
-      { "other_metric" => { type: :gauge, value: 20, source: nil } }
+      { "metric"       => { type: :counter, value: 1, source: "test" } },
+      { "other_metric" => { type: :gauge, value: 20, source: "test" } }
     ], queue._calls
 
     assert_equal true, queue._submitted

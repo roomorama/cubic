@@ -16,9 +16,9 @@ module Cubic
       def initialize(config)
         email   = config[:email]   || raise(MissingConfigurationError.new(:email))
         api_key = config[:api_key] || raise(MissingConfigurationError.new(:api_key))
+        @source = config[:source]  || raise(MissingConfigurationError.new(:source))
 
         @namespace = config[:namespace]
-        @source = config[:source]
         @queue_size = config[:queue_size]
 
         ::Librato::Metrics.authenticate(email, api_key)

@@ -4,7 +4,7 @@ class TestProviders < Minitest::Test
   def setup
     Cubic.config do |c|
       c.provider = :memory
-      c.provider_options = { email: "roomorama@example.org", api_key: "12345" }
+      c.provider_options = { email: "roomorama@example.org", api_key: "12345", source: "test" }
     end
   end
 
