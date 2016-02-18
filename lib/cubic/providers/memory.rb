@@ -1,6 +1,10 @@
 module Cubic
   module Providers
 
+    # +Cubic::Providers::Memory+
+    #
+    # The memory provider stores all measurements in primary memory. It is intended to
+    # be a provider for test experiments.
     class Memory
       attr_reader :storage
 

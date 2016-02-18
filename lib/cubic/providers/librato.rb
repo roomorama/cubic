@@ -13,6 +13,26 @@ module Cubic
         end
       end
 
+      # Initializes a new instance of +Cubic::Providers::Librato+
+      #
+      # config - the hash passed as +provider_options+ when configuring +Cubic+.
+      #
+      # The Librato provider will use the following options:
+      #
+      # * email      - the email account on Librato [required]
+      # * api_key    - the Librato API key [required]
+      # * source     - the source to be used in the measurements sent to Librato [required]
+      # * namespace  - a prefix to be used in all labels prior to sending to Librato [optional]
+      # * queue_size - used for long-running processes. See more info below.
+      #
+      # In case any of the required options are missing, this class cannot be initialized,
+      # and raises a +Cubic::Providers::Librato::MissingConfigurationError+.
+      #
+      # By default, this provider will synchonise measurements with Librato on each call
+      # (i.e., one API call for each.) While this might suffice for small one-off scripts,
+      # long-running processed such as web applications would benefit from sending measurements
+      # in bulks. To achieve such goal, the +queue_size+ option can be used. It specifies the
+      # number of measurements that must happen in order for the API call to happen.
       def initialize(config)
         email   = config[:email]   || raise(MissingConfigurationError.new(:email))
         api_key = config[:api_key] || raise(MissingConfigurationError.new(:api_key))

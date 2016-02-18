@@ -11,6 +11,13 @@ module Cubic
       end
     end
 
+    # returns an instantiated and configured provider that matches
+    # the +config+ given.
+    #
+    # config - a +Cubic::Configuration+ object
+    #
+    # Raises +Cubic::Providers::UnrecognizedProviderError+ in case
+    # the provider is not known.
     def self.build(config)
       case config.provider
       when :null

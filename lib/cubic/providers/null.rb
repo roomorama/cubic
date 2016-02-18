@@ -1,6 +1,10 @@
 module Cubic
   module Providers
 
+    # +Cubic::Providers::NullProvider+
+    #
+    # Provides a null implmentation for measurements. Ignores all calls to
+    # the interface methods.
     class Null
 
       def initialize(*)
