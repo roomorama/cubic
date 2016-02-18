@@ -18,11 +18,8 @@ module Cubic
   end
 
   def self.config
-    options = Configuration.new
-    yield options
-
-    self.configuration = options
-    self.provider = Cubic::Providers.build(options)
+    yield self.configuration
+    self.provider = Cubic::Providers.build(self.configuration)
   end
 
   def self.inc(*args)
