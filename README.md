@@ -66,9 +66,12 @@ Cubic.config do |c|
     source: "...",
     queue_size: 20
   }
+end
 ~~~
 
-Note that the queue is stored in memory and therefore different processes have different queues.
+Using the above, an API call will be sent to synchronise the measurements once  the number of
+buffered calls reaches `queue_size`.  Note that the queue is stored in memory and therefore
+different processes have different queues.
 
 ##### Namespacing
 
