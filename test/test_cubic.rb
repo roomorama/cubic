@@ -20,6 +20,10 @@ class TestCubic < Minitest::Test
     def time(*args, &block)
       calls << [:time, args]
     end
+
+    def transaction(*args)
+      calls << [:transaction, args]
+    end
   end
 
 
@@ -92,6 +96,18 @@ class TestCubic < Minitest::Test
 
     assert_equal :time, name
     assert_equal "metric", args.first
+  end
+
+  def test_delegate_transaction
+    Cubic.provider = test_provider
+
+    Cubic.transaction do
+      Cubic.val("metric", 20)
+    end
+
+    assert_equal [
+      [:transaction, []]
+    ], test_provider.calls
   end
 
 end

@@ -33,4 +33,8 @@ module Cubic
   def self.time(*args)
     provider.time(*args)
   end
+
+  def self.transaction(*args)
+    provider.transaction(*args)
+  end
 end
