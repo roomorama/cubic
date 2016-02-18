@@ -94,7 +94,11 @@ class TestLibrato < Minitest::Test
   end
 
   class Librato::Metrics::Queue
-    attr_reader :_calls, :_submitted
+    attr_reader :_calls, :_submitted, :_init_options
+
+    def initialize(*args)
+      @_init_options = args
+    end
 
     # overriding the `add` method to inspect its invokations.
     def add(options)
@@ -136,6 +140,15 @@ class TestLibrato < Minitest::Test
     ], queue._calls
 
     assert_equal true, queue._submitted
+  end
+
+  def test_queue_size
+    provider = Cubic::Providers::Librato.new(email: "librato@example.org", api_key: "12345", source: "test", queue_size: 10)
+
+    provider.inc("metric")
+    queue = provider.send(:long_lived_queue)
+
+    assert_equal [{ autosubmit_count: 10 }], queue._init_options
   end
 
 end
