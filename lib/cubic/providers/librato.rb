@@ -7,15 +7,15 @@ module Cubic
 
       attr_reader :client, :namespace, :source
 
-      class MissingConfiguration < StandardError
+      class MissingConfigurationError < StandardError
         def initialize(name)
           super(":librato provider requires a #{name} config")
         end
       end
 
       def initialize(config)
-        email   = config[:email]   || raise(MissingConfiguration.new(:email))
-        api_key = config[:api_key] || raise(MissingConfiguration.new(:api_key))
+        email   = config[:email]   || raise(MissingConfigurationError.new(:email))
+        api_key = config[:api_key] || raise(MissingConfigurationError.new(:api_key))
 
         @namespace = config[:namespace]
         @source = config[:source]

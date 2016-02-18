@@ -29,13 +29,13 @@ class TestLibrato < Minitest::Test
   end
 
   def test_requires_email
-    assert_raises(Cubic::Providers::Librato::MissingConfiguration) {
+    assert_raises(Cubic::Providers::Librato::MissingConfigurationError) {
       Cubic::Providers::Librato.new(api_key: "12345")
     }
   end
 
   def test_requires_api_key
-    assert_raises(Cubic::Providers::Librato::MissingConfiguration) {
+    assert_raises(Cubic::Providers::Librato::MissingConfigurationError) {
       Cubic::Providers::Librato.new(email: "librato@example.org")
     }
   end
