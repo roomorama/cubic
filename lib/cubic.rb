@@ -1,7 +1,7 @@
 require "cubic/providers"
 
 module Cubic
-  Configuration = Struct.new(:provider, :provider_options, :queue_size)
+  Configuration = Struct.new(:provider, :provider_options)
 
   DEFAULT_PROVIDER = :memory
 
@@ -9,7 +9,7 @@ module Cubic
     attr_writer :configuration, :provider
 
     def configuration
-      @configuration ||= Configuration.new(DEFAULT_PROVIDER, {}, 0)
+      @configuration ||= Configuration.new(DEFAULT_PROVIDER, {})
     end
 
     def provider

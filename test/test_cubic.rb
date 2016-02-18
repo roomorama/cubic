@@ -37,7 +37,6 @@ class TestCubic < Minitest::Test
   def test_default_configuration
     assert_equal :memory, Cubic.configuration.provider
     assert_equal({}, Cubic.configuration.provider_options)
-    assert_equal 0, Cubic.configuration.queue_size
   end
 
   def test_default_provider
@@ -47,13 +46,11 @@ class TestCubic < Minitest::Test
   def test_customising_configuration
     Cubic.config do |c|
       c.provider = :memory
-      c.queue_size = 20
       c.provider_options = { fast: true }
     end
 
     assert_equal :memory, Cubic.configuration.provider
     assert_equal({ fast: true }, Cubic.configuration.provider_options)
-    assert_equal 20, Cubic.configuration.queue_size
   end
 
   def test_delegate_inc
