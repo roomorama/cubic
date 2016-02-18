@@ -5,7 +5,7 @@ module Cubic
 
     class Librato
 
-      attr_reader :client, :namespace, :source
+      attr_reader :client, :namespace, :source, :queue_size
 
       class MissingConfigurationError < StandardError
         def initialize(name)
@@ -19,6 +19,7 @@ module Cubic
 
         @namespace = config[:namespace]
         @source = config[:source]
+        @queue_size = config[:queue_size]
 
         ::Librato::Metrics.authenticate(email, api_key)
       end
@@ -42,7 +43,13 @@ module Cubic
       private
 
       def submit(label, type, value)
-        ::Librato::Metrics.submit(namespaced(label) => { type: type, value: value, source: source })
+        params = { namespaced(label) => { type: type, value: value, source: source } }
+
+        if queue
+          queue.add(params)
+        else
+          ::Librato::Metrics.submit(params)
+        end
       end
 
       def namespaced(label)
@@ -51,6 +58,10 @@ module Cubic
         else
           label
         end
+      end
+
+      def queue
+        @queue ||= queue_size && ::Librato::Metrics::Queue.new(autosubmit_count: queue_size)
       end
 
     end

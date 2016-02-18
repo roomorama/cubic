@@ -6,15 +6,15 @@ require "cubic/providers/librato"
 module Librato::Metrics
   class << self
     def reset!
-      @calls = []
+      @_calls = []
     end
 
-    def calls
-      @calls ||= []
+    def _calls
+      @_calls ||= []
     end
 
     def submit(options)
-      calls << options
+      _calls << options
     end
   end
 end
@@ -44,14 +44,14 @@ class TestLibrato < Minitest::Test
     provider = Cubic::Providers::Librato.new(email: "librato@example.org", api_key: "12345", namespace: "dev")
     provider.inc("metric")
 
-    assert_equal [{ "dev.metric" => { type: :counter, value: 1, source: nil } }], Librato::Metrics.calls
+    assert_equal [{ "dev.metric" => { type: :counter, value: 1, source: nil } }], Librato::Metrics._calls
   end
 
   def test_source
     provider = Cubic::Providers::Librato.new(email: "librato@example.org", api_key: "12345", source: "m1")
     provider.inc("metric")
 
-    assert_equal [{ "metric" => { type: :counter, value: 1, source: "m1" } }], Librato::Metrics.calls
+    assert_equal [{ "metric" => { type: :counter, value: 1, source: "m1" } }], Librato::Metrics._calls
   end
 
   def test_inc
@@ -63,7 +63,7 @@ class TestLibrato < Minitest::Test
       { "metric"          => { type: :counter, value: 1, source: nil } },
       { "metric"          => { type: :counter, value: 1, source: nil } },
       { "metric_multiple" => { type: :counter, value: 3, source: nil } }
-    ], Librato::Metrics.calls
+    ], Librato::Metrics._calls
   end
 
   def test_val
@@ -75,12 +75,12 @@ class TestLibrato < Minitest::Test
       { "metric" => { type: :gauge, value: 20, source: nil } },
       { "metric" => { type: :gauge, value: 30, source: nil } },
       { "metric" => { type: :gauge, value: 0, source: nil } }
-    ], Librato::Metrics.calls
+    ], Librato::Metrics._calls
   end
 
   def test_time
     provider.time("metric") { 50.times { raise "error" rescue nil } }
-    calls = Librato::Metrics.calls
+    calls = Librato::Metrics._calls
 
     assert_equal 1, calls.size
 
@@ -92,6 +92,29 @@ class TestLibrato < Minitest::Test
     assert_equal :gauge, value[:type]
     assert value[:value]
     assert_nil value[:source]
+  end
+
+  class Librato::Metrics::Queue
+    attr_reader :_calls
+
+    # overriding the `add` method to inspect its invokations.
+    def add(options)
+      @_calls ||= []
+      _calls << options
+    end
+  end
+
+  def test_queue
+    provider = Cubic::Providers::Librato.new(email: "librato@example.org", api_key: "12345", queue_size: 20)
+
+    provider.inc("metric")
+    provider.val("other_metric", 20)
+    calls = provider.send(:queue)._calls
+
+    assert_equal [
+      { "metric"       => { type: :counter, value: 1, source: nil } },
+      { "other_metric" => { type: :gauge, value: 20, source: nil } }
+    ], calls
   end
 
 end
