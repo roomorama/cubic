@@ -4,7 +4,7 @@ module Cubic
     class Memory
       attr_reader :storage
 
-      def initialize
+      def initialize(*)
         @storage = {}
       end
 

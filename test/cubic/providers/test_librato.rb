@@ -1,4 +1,4 @@
-require "minitest/autorun"
+require "setup"
 require "cubic/providers/librato"
 
 # stub `submit` method to be able to check on performed calls

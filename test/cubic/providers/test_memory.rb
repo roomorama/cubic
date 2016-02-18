@@ -1,5 +1,4 @@
-require "minitest/autorun"
-require "cubic/providers/memory"
+require "setup"
 
 class TestMemory < Minitest::Test
 

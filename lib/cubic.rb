@@ -1,13 +1,15 @@
-module Cubic
-  Configuration = Struct.new(:provider, :queue_size)
+require "cubic/providers"
 
-  DEFAULT_PROVIDER = :librato
+module Cubic
+  Configuration = Struct.new(:provider, :provider_options, :queue_size)
+
+  DEFAULT_PROVIDER = :memory
 
   class << self
     attr_writer :configuration
 
     def configuration
-      @configuration ||= Configuration.new(DEFAULT_PROVIDER, 0)
+      @configuration ||= Configuration.new(DEFAULT_PROVIDER, {}, 0)
     end
   end
 

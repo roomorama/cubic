@@ -1,5 +1,4 @@
-require "cubic"
-require "minitest/autorun"
+require "setup"
 
 class TestCubic < Minitest::Test
 
@@ -8,7 +7,7 @@ class TestCubic < Minitest::Test
   end
 
   def test_default_configuration
-    assert_equal :librato, Cubic.configuration.provider
+    assert_equal :memory, Cubic.configuration.provider
     assert_equal 0, Cubic.configuration.queue_size
   end
 

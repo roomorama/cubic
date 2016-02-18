@@ -14,14 +14,18 @@ GEM
       aggregate (~> 0.2.2)
       faraday (~> 0.7)
       multi_json
+    minitest (5.8.3)
     multi_json (1.11.2)
     multipart-post (2.0.0)
+    rake (10.5.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   cubic!
+  minitest
+  rake
 
 BUNDLED WITH
-   1.10.6
+   1.11.2
