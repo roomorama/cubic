@@ -30,11 +30,11 @@ module Cubic
     provider.val(*args)
   end
 
-  def self.time(*args)
-    provider.time(*args)
+  def self.time(*args, &block)
+    provider.time(*args, &block)
   end
 
-  def self.transaction(*args)
-    provider.transaction(*args)
+  def self.transaction(*args, &block)
+    provider.transaction(*args, &block)
   end
 end
