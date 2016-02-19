@@ -12,7 +12,11 @@ Gem::Specification.new do |s|
   s.description = "Cubic provides a unified interface for metric systems"
 
   s.files = Dir["lib/**/*", "README.md"]
+  s.bindir = "bin"
   s.test_files = Dir["test/**/*"]
 
   s.add_dependency "librato-metrics", "~> 1.6.0"
+
+  s.add_development_dependency "rake"
+  s.add_development_dependency "minitest"
 end

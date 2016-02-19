@@ -1,0 +1,53 @@
+#!/usr/bin/env ruby
+
+require "cubic"
+
+action = ARGV.first
+
+if action != "init"
+  STDERR.puts "Usage: cubic init [directory]"
+  exit 1
+end
+
+initializers = "./config/initializers"
+
+# command-line option for output directory
+if ARGV[1]
+  directory = ARGV[1]
+elsif defined?(Rails) || File.directory?(initializers)
+  directory = initializers
+end
+
+if directory
+  path = [directory, "cubic.rb"].join("/")
+  File.write(path, DATA.read)
+
+  puts "Rails app identified. Cubic config written to #{path}"
+else
+  puts DATA.read
+end
+
+__END__
+Cubic.config do |c|
+
+  # indicates the provider for the metrics in the app. Defaults to `:memory`, causing
+  # all measurements to be saved in memory and is a setting targeted only for tests.
+  c.provider = :memory
+
+  # Use Librato as metrics provider. See the docs for supported provide options.
+  # c.provider = :librato
+  # c.provider_options = {
+  #   email: ENV["LIBRATO_ACCOUNT"],
+  #   api_token: ENV["LIBRATO_API_KEY"],
+  #   source: "my_application"
+  # }
+  #
+  # For Rails environments, it can be useful to use the `:null` provider for local
+  # environments, which just ignores all calls.
+  # providers = {
+  #   "production" => :librato,
+  #   "staging" => :librato
+  # }
+  # c.provider = providers.fetch(Rails.env, :null)
+
+end
