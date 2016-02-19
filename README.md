@@ -85,6 +85,7 @@ Cubic.config do |c|
     # ...
     namespace: "web_app"
   }
+end
 ~~~
 
 With the above settings, a call to `Cubic.inc("metric")` will be identified as `web_app.metric` on Librato.
