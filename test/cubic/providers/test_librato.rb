@@ -9,12 +9,20 @@ module Librato::Metrics
       @_calls = []
     end
 
+    def error_mode!
+      @error_mode = true
+    end
+
     def _calls
       @_calls ||= []
     end
 
     def submit(options)
       _calls << options
+
+      if @error_mode
+        raise ServerError.new("Librato is unavailable")
+      end
     end
   end
 end
@@ -149,6 +157,12 @@ class TestLibrato < Minitest::Test
     queue = provider.send(:long_lived_queue)
 
     assert_equal [{ autosubmit_count: 10 }], queue._init_options
+  end
+
+  def test_error_handling
+    ::Librato::Metrics.error_mode!
+
+    assert Cubic.inc("metric")
   end
 
 end

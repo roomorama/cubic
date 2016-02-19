@@ -64,7 +64,7 @@ module Cubic
         @_transaction_queue = ::Librato::Metrics::Queue.new
         yield
       ensure
-        _transaction_queue.submit
+        no_failure { _transaction_queue.submit }
         @_transaction_queue = nil
       end
 
@@ -73,11 +73,19 @@ module Cubic
       def submit(label, type, value)
         params = { namespaced(label) => { type: type, value: value, source: source } }
 
-        if queue
-          queue.add(params)
-        else
-          ::Librato::Metrics.submit(params)
+        no_failure do
+          if queue
+            queue.add(params)
+          else
+            ::Librato::Metrics.submit(params)
+          end
         end
+      end
+
+      def no_failure
+        yield
+      rescue ::Librato::Metrics::ClientError, ::Librato::Metrics::ServerError
+        # continue execution if Librato is unavailable
       end
 
       def namespaced(label)
