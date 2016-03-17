@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.summary     = "Cubic measures"
   s.description = "Cubic provides a unified interface for metric systems"
 
-  s.files = Dir["lib/**/*", "README.md"]
+  s.files = Dir["lib/**/*", "bin/*", "README.md"]
   s.bindir = "bin"
   s.test_files = Dir["test/**/*"]
 
