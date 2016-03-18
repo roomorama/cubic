@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    cubic (0.3)
+    cubic (0.4)
       librato-metrics (~> 1.6.0)
 
 GEM
