@@ -86,7 +86,7 @@ class TestLibrato < Minitest::Test
   end
 
   def test_time
-    provider.time("metric") { 50.times { raise "error" rescue nil } }
+    result = provider.time("metric") { 50.times { raise "error" rescue nil } }
     calls = Librato::Metrics._calls
 
     assert_equal 1, calls.size
@@ -95,6 +95,7 @@ class TestLibrato < Minitest::Test
     name = call.keys.first
     value = call.values.first
 
+    assert_equal 50, result
     assert_equal "metric", name
     assert_equal :gauge, value[:type]
     assert value[:value]
