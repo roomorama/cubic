@@ -30,8 +30,9 @@ class TestMemory < Minitest::Test
   end
 
   def test_time
-    provider.time("some computation") { 50.times { raise "error" rescue nil } }
+    result = provider.time("some computation") { 50.times { raise "error" rescue nil } }
 
+    assert_equal 50, result
     assert provider.query("some computation")
   end
 

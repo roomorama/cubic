@@ -24,10 +24,11 @@ module Cubic
 
       def time(label)
         start = Time.now
-        yield
+        result = yield
       ensure
         duration_in_ms = ((Time.now - start) * 1000).round
         val(label, duration_in_ms)
+        result
       end
 
       def transaction
