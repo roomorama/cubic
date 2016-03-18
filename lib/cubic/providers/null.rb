@@ -17,6 +17,7 @@ module Cubic
       end
 
       def time(*)
+        yield
       end
 
       def transaction
