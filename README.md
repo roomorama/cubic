@@ -90,6 +90,12 @@ end
 
 With the above settings, a call to `Cubic.inc("metric")` will be identified as `web_app.metric` on Librato.
 
+##### Metric Names
+
+Note that Librato **does not support metric names with slashes**. If a metric name includes slashes,
+the synchronisation with Librato might fail due to this shortcoming. Make sure metric names include
+only non-blank characters and dots/underscores.
+
 ### Configuration
 
 Cubic can be configured prior to its usage. To generate a default configuration file, run:
