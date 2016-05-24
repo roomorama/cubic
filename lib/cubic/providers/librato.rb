@@ -44,12 +44,16 @@ module Cubic
         ::Librato::Metrics.authenticate(email, api_key)
       end
 
-      def inc(label, by: 1)
+      def counter(label, by: 1)
         submit(label, :counter, by)
       end
 
       def val(label, value)
         submit(label, :gauge, value)
+      end
+      
+      def inc(label, by: 1)
+        submit(label, :gauge, by)
       end
 
       def time(label)

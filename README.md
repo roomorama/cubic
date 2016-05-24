@@ -90,6 +90,11 @@ end
 
 With the above settings, a call to `Cubic.inc("metric")` will be identified as `web_app.metric` on Librato.
 
+##### Metrics
+
+- `gauge` - currently we use only this metric type for all measurements.
+- `counter` - this type works not as we expect, it shows difference between counters. Look at usage [here](https://www.librato.com/docs/kb/faq/glossary/whats_a_counter.html). Currently implemented in Librato provider but not in Cubic.
+
 ##### Metric Names
 
 Note that Librato **does not support metric names with slashes**. If a metric name includes slashes,

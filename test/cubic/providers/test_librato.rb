@@ -1,4 +1,4 @@
-require "setup"
+require_relative "../../setup"
 require "cubic/providers/librato"
 
 # stub `submit` method to be able to check on performed calls
@@ -58,13 +58,13 @@ class TestLibrato < Minitest::Test
     provider = Cubic::Providers::Librato.new(email: "librato@example.org", api_key: "12345", source: "test", namespace: "dev")
     provider.inc("metric")
 
-    assert_equal [{ "dev.metric" => { type: :counter, value: 1, source: "test" } }], Librato::Metrics._calls
+    assert_equal [{ "dev.metric" => { type: :gauge, value: 1, source: "test" } }], Librato::Metrics._calls
   end
 
-  def test_inc
-    provider.inc("metric")
-    provider.inc("metric")
-    provider.inc("metric_multiple", by: 3)
+  def test_counter
+    provider.counter("metric")
+    provider.counter("metric")
+    provider.counter("metric_multiple", by: 3)
 
     assert_equal [
       { "metric"          => { type: :counter, value: 1, source: "test" } },
@@ -82,6 +82,18 @@ class TestLibrato < Minitest::Test
       { "metric" => { type: :gauge, value: 20, source: "test" } },
       { "metric" => { type: :gauge, value: 30, source: "test" } },
       { "metric" => { type: :gauge, value: 0, source: "test" } }
+    ], Librato::Metrics._calls
+  end
+
+  def test_inc
+    provider.inc("metric", by: 20)
+    provider.inc("metric", by: 30)
+    provider.inc("metric")
+
+    assert_equal [
+      { "metric" => { type: :gauge, value: 20, source: "test" } },
+      { "metric" => { type: :gauge, value: 30, source: "test" } },
+      { "metric" => { type: :gauge, value: 1, source: "test" } }
     ], Librato::Metrics._calls
   end
 
@@ -128,7 +140,7 @@ class TestLibrato < Minitest::Test
     calls = provider.send(:queue)._calls
 
     assert_equal [
-      { "metric"       => { type: :counter, value: 1, source: "test" } },
+      { "metric"       => { type: :gauge, value: 1, source: "test" } },
       { "other_metric" => { type: :gauge, value: 20, source: "test" } }
     ], calls
   end
@@ -144,7 +156,7 @@ class TestLibrato < Minitest::Test
     end
 
     assert_equal [
-      { "metric"       => { type: :counter, value: 1, source: "test" } },
+      { "metric"       => { type: :gauge, value: 1, source: "test" } },
       { "other_metric" => { type: :gauge, value: 20, source: "test" } }
     ], queue._calls
 

@@ -16,6 +16,7 @@ module Cubic
         storage[label] ||= 0
         storage[label] += by
       end
+      alias_method :counter, :inc
 
       def val(label, value)
         storage[label] ||= []
