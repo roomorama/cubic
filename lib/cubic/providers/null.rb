@@ -12,6 +12,7 @@ module Cubic
 
       def inc(*)
       end
+      alias_method :counter, :inc
 
       def val(*)
       end
