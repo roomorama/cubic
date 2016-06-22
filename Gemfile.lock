@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    cubic (0.4)
+    cubic (0.5)
       librato-metrics (~> 1.6.0)
 
 GEM
@@ -15,7 +15,7 @@ GEM
       faraday (~> 0.7)
       multi_json
     minitest (5.8.3)
-    multi_json (1.11.2)
+    multi_json (1.12.1)
     multipart-post (2.0.0)
     rake (10.5.0)
 
