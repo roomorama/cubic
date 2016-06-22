@@ -1,30 +1,19 @@
 module Cubic
   module Providers
     class Redis
-
-      def initialize(*)
+      def initialize(config)
       end
 
-      def inc(*)
+      def inc(label, by: 1)
       end
 
       alias_method :counter, :inc
 
-      def val(*)
+      def val(label, value)
       end
 
-      def time(*)
-        yield
+      def inc(label, by: 1)
       end
-
-      def transaction
-        yield
-      end
-
-      def query(*)
-      end
-
     end
-
   end
 end
