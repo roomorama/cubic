@@ -3,6 +3,8 @@ require 'redis'
 module Cubic
   module Providers
     module RedisConnection
+      class NoMoreConnectionError;end
+
       class Pool
         SIZE = 5
 
@@ -13,22 +15,20 @@ module Cubic
         end
 
         def get_object
-          if _available.empty? && _in_used.size < pool_size
-            obj = @klass.new(url: @url)
-          else
-            obj = _available.shift
-          end
-
-          raise "No more connection" unless obj
+          obj = can_spawn? ? @klass.new(url: @url) : _available.shift
+          raise NoMoreConnectionError unless obj
 
           _in_used << obj
-
           obj
         end
 
         def release(obj)
           _available << obj
           _in_used.delete obj
+        end
+
+        def can_spawn?
+          _available.empty? && _in_used.size < pool_size
         end
 
         def pool_size

@@ -3,26 +3,32 @@ module Cubic
     class Redis
       DEFAULT_URL = "redis://localhost:6379/15".freeze
 
+      att_reader :pool
+
       def initialize(config)
         @url = config[:url] || DEFAULT_URL
+        @pool = Redis::Pool.new(@url)
       end
 
       def inc(label, by: 1)
-        client.incrby(label, by)
+        connection do |client|
+          client.incrby(label, by)
+        end
       end
 
       alias_method :counter, :inc
 
       def val(label, value)
-        client.set(label, value)
+        connection do |client|
+          client.set(label, value)
+        end
       end
 
-      def client
-        pool.get_instance
-      end
+      def connection(&block)
+        client = pool.get_object
 
-      def pool
-        @pool ||= Redis::Pool.new(@url)
+        block.call(client)
+        pool.release(client)
       end
     end
   end
