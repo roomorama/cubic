@@ -3,11 +3,11 @@ module Cubic
     class Redis
       DEFAULT_URL = "redis://localhost:6379/15".freeze
 
-      att_reader :pool
+      attr_reader :pool
 
       def initialize(config)
         @url = config[:url] || DEFAULT_URL
-        @pool = Redis::Pool.new(@url)
+        @pool = RedisConnection::Pool.new(@url)
       end
 
       def inc(label, by: 1)
