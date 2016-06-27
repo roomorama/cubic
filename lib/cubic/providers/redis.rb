@@ -18,7 +18,11 @@ module Cubic
       end
 
       def client
-        Redis::Pool.get_instance @url
+        pool.get_instance
+      end
+
+      def pool
+        @pool ||= Redis::Pool.new(@url)
       end
     end
   end
