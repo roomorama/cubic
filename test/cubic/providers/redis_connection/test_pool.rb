@@ -8,7 +8,7 @@ class TestPool < Minitest::Test
 
   def test_size
     pool = Cubic::Providers::RedisConnection::Pool.new(@url)
-    assert_equal pool.size, 5
+    assert_equal pool.pool_size, 5
   end
 
   def test_get_object
@@ -41,5 +41,14 @@ class TestPool < Minitest::Test
 
     obj2 = pool.get_object
     assert_equal obj1, obj2
+  end
+
+  def test_release_object_2
+    pool = Cubic::Providers::RedisConnection::Pool.new(@url, 2)
+    obj1 = pool.get_object
+    obj2 = pool.get_object
+    pool.release(obj1)
+
+    assert_equal obj1, pool.get_object
   end
 end

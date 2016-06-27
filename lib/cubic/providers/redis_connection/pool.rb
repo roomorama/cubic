@@ -13,7 +13,7 @@ module Cubic
         end
 
         def get_object
-          if _available.size == 0 && _in_used.size < size
+          if _available.empty? && _in_used.size < pool_size
             obj = @klass.new(url: @url)
           else
             obj = _available.shift
@@ -31,7 +31,7 @@ module Cubic
           _in_used.delete obj
         end
 
-        def size
+        def pool_size
           @size || ENV['REDIS_POOL_SIZE'] || SIZE
         end
 
