@@ -2,3 +2,8 @@
 
 $LOAD_PATH << File.join(__dir__, "../lib/")
 require "cubic"
+require "cubic/workers/librato"
+
+worker = Cubic::Workers::Librato.new
+
+worker.start
