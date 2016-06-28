@@ -9,6 +9,10 @@ class Redis
   def incrby(label, by)
     @@result = [label, by]
   end
+
+  def set(label, value)
+    @@result = [label, value]
+  end
 end
 
 class TestRedis < Minitest::Test
@@ -19,5 +23,10 @@ class TestRedis < Minitest::Test
   def test_inc
     result = @redis_provider.inc("dev.metric", by: 3)
     assert_equal ::Redis.result, ["dev.metric", 3]
+  end
+
+  def test_val
+    result = @redis_provider.val("dev.metric", 5)
+    assert_equal ::Redis.result, ["dev.metric", 5]
   end
 end

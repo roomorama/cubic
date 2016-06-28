@@ -7,12 +7,13 @@ module Cubic
 
       def initialize(config)
         @url = config[:url] || DEFAULT_URL
+        @namespace = config[:namespace]
         @pool = RedisConnection::Pool.new(@url)
       end
 
       def inc(label, by: 1)
         connection do |client|
-          client.incrby(label, by)
+          client.incrby(namespaced(label), by)
         end
       end
 
@@ -20,7 +21,7 @@ module Cubic
 
       def val(label, value)
         connection do |client|
-          client.set(label, value)
+          client.set(namespaced(label), value)
         end
       end
 
@@ -29,6 +30,15 @@ module Cubic
 
         block.call(client)
         pool.release(client)
+      end
+
+      # DUPLICATE FOR NOW - WILL REFACTOR
+      def namespaced(label)
+        if @namespace
+          [@namespace, label].join(".")
+        else
+          label
+        end
       end
     end
   end
