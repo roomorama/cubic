@@ -7,18 +7,18 @@ class TestPool < Minitest::Test
   end
 
   def test_size
-    pool = Cubic::RedisConnection::Pool.new(@url)
+    pool = Cubic::RedisConnection::Pool.new(url: @url)
     assert_equal pool.pool_size, 5
   end
 
   def test_get_object
-    pool = Cubic::RedisConnection::Pool.new(@url)
+    pool = Cubic::RedisConnection::Pool.new(url: @url)
     obj = pool.get_object
     assert_instance_of ::Redis, obj
   end
 
   def test_get_different_object
-    pool = Cubic::RedisConnection::Pool.new(@url, 2)
+    pool = Cubic::RedisConnection::Pool.new(url: @url, size: 2)
     obj1 = pool.get_object
     obj2 = pool.get_object
 
@@ -26,7 +26,7 @@ class TestPool < Minitest::Test
   end
 
   def test_get_out_of_range
-    pool = Cubic::RedisConnection::Pool.new(@url, 1)
+    pool = Cubic::RedisConnection::Pool.new(url: @url, size: 1)
     obj1 = pool.get_object
 
     assert_raises do
@@ -35,7 +35,7 @@ class TestPool < Minitest::Test
   end
 
   def test_release_object
-    pool = Cubic::RedisConnection::Pool.new(@url, 1)
+    pool = Cubic::RedisConnection::Pool.new(url: @url, size: 1)
     obj1 = pool.get_object
     pool.release(obj1)
 
@@ -44,7 +44,7 @@ class TestPool < Minitest::Test
   end
 
   def test_release_object_2
-    pool = Cubic::RedisConnection::Pool.new(@url, 2)
+    pool = Cubic::RedisConnection::Pool.new(url: @url, size: 2)
     obj1 = pool.get_object
     obj2 = pool.get_object
     pool.release(obj1)

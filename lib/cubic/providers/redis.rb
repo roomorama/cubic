@@ -22,9 +22,8 @@ module Cubic
       #
       # * namespace  - a prefix to be used in all labels prior to sending to Librato [optional]
       def initialize(config)
-        @url = config[:url] || DEFAULT_URL
         @namespace = config[:namespace]
-        @pool = RedisConnection::Pool.new(@url)
+        @pool = RedisConnection::Pool.new(config)
       end
 
       def inc(label, by: 1)

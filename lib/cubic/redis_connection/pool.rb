@@ -7,10 +7,10 @@ module Cubic
     class Pool
       SIZE = 5
 
-      def initialize(url, size = nil, klass = nil)
-        @url = url
-        @klass = klass || default_klass
-        @size = size
+      def initialize(config = {})
+        @url = config[:url]
+        @klass = config[:klass] || default_klass
+        @size = config[:size]
       end
 
       # Request an Redis connection object from redis pool
