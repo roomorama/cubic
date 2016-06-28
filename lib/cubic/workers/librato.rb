@@ -14,7 +14,7 @@ module Cubic
       end
 
       def load_redis_metrics
-        @pool.use do |conn|
+        redis_pool.use do |conn|
           keys   = conn.keys KEY_PATTERN
           values = conn.mget keys
 
@@ -23,7 +23,7 @@ module Cubic
       end
 
       def redis_pool
-        @pool ||= Redis::Pool.new(config)
+        @pool ||= RedisConnection::Pool.new(config)
       end
 
       def submit_librato(metrics)
