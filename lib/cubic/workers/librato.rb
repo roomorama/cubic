@@ -22,14 +22,14 @@ module Cubic
         end
       end
 
-      def redis_pool
-        @pool ||= RedisConnection::Pool.new(config)
-      end
-
       def submit_librato(metrics)
         metrics.names.each_with_index do |name, i|
           librato_provider.val(name, metrics.values[i])
         end
+      end
+
+      def redis_pool
+        @pool ||= RedisConnection::Pool.new(config)
       end
 
       def librato_provider
