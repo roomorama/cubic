@@ -1,3 +1,4 @@
+require 'cubic/redis_connection/pool'
 module Cubic
   module Providers
     class Redis
