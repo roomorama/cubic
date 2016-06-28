@@ -28,7 +28,7 @@ module Cubic
       end
 
       def inc(label, by: 1)
-        connection do |client|
+        pool.use do |client|
           client.incrby(namespaced(label), by)
         end
       end
@@ -36,19 +36,9 @@ module Cubic
       alias_method :counter, :inc
 
       def val(label, value)
-        connection do |client|
+        pool.use do |client|
           client.set(namespaced(label), value)
         end
-      end
-
-      # Request an Redis connection object from redis pool
-      # Then do something with this connection object
-      # Then return this object to the pool
-      def connection(&block)
-        client = pool.get_object
-
-        block.call(client)
-        pool.release(client)
       end
 
       # DUPLICATE FOR NOW - WILL REFACTOR
