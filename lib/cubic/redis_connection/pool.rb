@@ -19,8 +19,9 @@ module Cubic
       def use(&block)
         client = get_object
 
-        block.call(client)
+        result = block.call(client)
         release(client)
+        result
       end
 
       def get_object

@@ -6,8 +6,10 @@ module Cubic
     class Base
       START_WORKER_MSG = "Starting the worker".freeze
 
-      def initialize(opts = {})
-        @inteval = opts[:inteval]
+      attr_reader :config
+
+      def initialize(config = {})
+        @config = config
       end
 
       # One time run - for testing
@@ -32,7 +34,7 @@ module Cubic
       # Interval time in seconds
       #   Default is 1
       def interval
-        @interval || 1
+        @config[:interval] || 1
       end
 
       def log_error(msg)

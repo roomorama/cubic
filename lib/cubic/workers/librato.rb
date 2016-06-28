@@ -3,17 +3,17 @@ require_relative './base'
 module Cubic
   module Workers
     class Librato < Base
+      KEY_PATTERN = "*".freeze
+
       def start
         perform do
         end
       end
 
       def load_redis_metrics
-        @_conn.
-      end
-
-      def redis_connection
-        @_conn = @pool.get_object
+        @pool.use do |conn|
+          conn.keys KEY_PATTERN
+        end
       end
 
       def redis_pool
