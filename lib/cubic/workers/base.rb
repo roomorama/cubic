@@ -1,3 +1,4 @@
+require 'logger'
 require 'cubic/redis_connection/pool'
 
 module Cubic
@@ -11,32 +12,35 @@ module Cubic
 
       # One time run - for testing
       def rehearsal(&block)
-        perform(&block)
-        shutdown!
+        block.call if block
       end
 
       def perform(&block)
-        log :info, START_WORKER_MSG
         loop do
           break if shutdown?
-
           sleep interval
 
           begin
             block.call if block
           rescue Exception => e
-            log :error, e.backtrace
+            log_error e.backtrace
             next
           end
         end
       end
 
+      # Interval time in seconds
+      #   Default is 1
       def interval
-        @interval || 10
+        @interval || 1
       end
 
-      def log(severity = :info, message = nil)
-        Logger.log severity, message
+      def log_error(msg)
+        logger.error msg
+      end
+
+      def log_info(msg)
+        logger.info msg
       end
 
       def logger
@@ -47,7 +51,7 @@ module Cubic
         @shutdown
       end
 
-      def shutdown
+      def shutdown!
         @shutdown = true
       end
     end
