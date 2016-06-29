@@ -18,6 +18,7 @@ module Cubic
       end
 
       def perform(&block)
+        log_info "Worker is starting..."
         loop do
           break if shutdown?
           sleep interval

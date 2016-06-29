@@ -29,7 +29,7 @@ module Cubic
       def submit_librato(metrics)
         metrics.names.each_with_index do |name, i|
           result = librato_provider.val(name, metrics.values[i])
-          log_info result
+          log_info "OK, pushed" if result
         end
       end
 
