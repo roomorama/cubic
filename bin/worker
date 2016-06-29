@@ -1,9 +1,20 @@
 #!/usr/bin/env ruby
 
 $LOAD_PATH << File.join(__dir__, "../lib/")
+
 require "cubic"
 require "cubic/workers/librato"
 
-worker = Cubic::Workers::Librato.new
+config = {
+  email: "webmaster@roomorama.com",
+  api_key: "",
+  source: "phobo_dev",
+  namespace: "monitor",
+  queue_size: 1,
+  interval: 1,
+  url: "redis://localhost:6379"
+}
+
+worker = Cubic::Workers::Librato.new(config)
 
 worker.start

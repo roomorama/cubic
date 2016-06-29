@@ -1,4 +1,5 @@
 require_relative './base'
+require 'byebug'
 
 module Cubic
   module Workers
@@ -9,14 +10,17 @@ module Cubic
 
       def start
         perform do
-          submit_librato load_redis_metrics
+          metrics = load_redis_metrics
+          log_info metrics.to_s if metrics.names.any?
+          submit_librato metrics
         end
       end
 
       def load_redis_metrics
         redis_pool.use do |conn|
           keys   = conn.keys KEY_PATTERN
-          values = conn.mget keys
+          values = keys.any? ? conn.mget(keys) : []
+          conn.del(keys) unless keys.empty?
 
           Metric.new(keys, values)
         end
@@ -24,7 +28,8 @@ module Cubic
 
       def submit_librato(metrics)
         metrics.names.each_with_index do |name, i|
-          librato_provider.val(name, metrics.values[i])
+          result = librato_provider.val(name, metrics.values[i])
+          log_info result
         end
       end
 

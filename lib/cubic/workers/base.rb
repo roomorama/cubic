@@ -25,7 +25,7 @@ module Cubic
           begin
             block.call if block
           rescue Exception => e
-            log_error e.backtrace
+            log_error e.backtrace.join("\n")
             next
           end
         end
