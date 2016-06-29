@@ -1,4 +1,5 @@
 require_relative './base'
+require_relative './config'
 
 module Cubic
   module Workers

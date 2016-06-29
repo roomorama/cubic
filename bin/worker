@@ -4,17 +4,13 @@ $LOAD_PATH << File.join(__dir__, "../lib/")
 
 require "cubic"
 require "cubic/workers/librato"
+require "byebug"
 
-config = {
-  email: "webmaster@roomorama.com",
-  api_key: "",
-  source: "phobo_dev",
-  namespace: "monitor",
-  queue_size: 1,
-  interval: 1,
-  url: "redis://localhost:6379"
-}
+if "-c" == ARGV[0]
+  path = ARGV[1]
+end
 
-worker = Cubic::Workers::Librato.new(config)
+config = Cubic::Workers::Config.configure(path)
+worker = Cubic::Workers::Librato.new(config.to_h)
 
 worker.start

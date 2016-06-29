@@ -5,7 +5,7 @@ module Cubic
   module Workers
     class Config
       def self.configure(path, &block)
-        new(path, &block).load
+        new(path, &block).load!
       end
 
       attr_reader :path, :block
@@ -23,6 +23,10 @@ module Cubic
         else
           {}
         end
+      end
+
+      def to_h
+        config.to_h
       end
 
       def config
