@@ -1,5 +1,4 @@
 require_relative './base'
-require 'byebug'
 
 module Cubic
   module Workers
@@ -12,6 +11,7 @@ module Cubic
         perform do
           metrics = load_redis_metrics
           log_info metrics.to_s if metrics.names.any?
+
           submit_librato metrics
         end
       end
@@ -28,8 +28,7 @@ module Cubic
 
       def submit_librato(metrics)
         metrics.names.each_with_index do |name, i|
-          result = librato_provider.val(name, metrics.values[i])
-          log_info "OK, pushed" if result
+          librato_provider.val(name, metrics.values[i])
         end
       end
 
