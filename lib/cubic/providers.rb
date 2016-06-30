@@ -4,6 +4,7 @@ module Cubic
     autoload :Null, "cubic/providers/null"
     autoload :Memory, "cubic/providers/memory"
     autoload :Librato, "cubic/providers/librato"
+    autoload :Redis, "cubic/providers/redis"
 
     class UnrecognizedProviderError < StandardError
       def initialize(provider)
@@ -26,6 +27,8 @@ module Cubic
         Memory.new
       when :librato
         Librato.new(config.provider_options)
+      when :redis
+        Redis.new(config.provider_options)
       else
         raise UnrecognizedProviderError.new(config.provider)
       end

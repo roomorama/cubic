@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH << File.join(__dir__, "../lib/")
+
+require "cubic"
+require "cubic/workers/librato"
+
+if "-c" == ARGV[0]
+  path = ARGV[1]
+end
+
+config = Cubic::Workers::Config.configure(path)
+worker = Cubic::Workers::Librato.new(config.to_h)
+
+worker.start

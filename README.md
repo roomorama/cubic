@@ -1,12 +1,14 @@
 # ![cubic](https://cloud.githubusercontent.com/assets/613784/13137729/f0ba9ca6-d65d-11e5-9ad7-c3582cc177c3.png) Cubic
 
 Cubic provides a unified interface for performing measurements using different _providers_.
+Also Cubic supports the worker mode to push measurements to _provider_ async.
 
 Available providers:
 
 * `Null`: a no-op provider, useful for development and test environments.
 * `Memory`: stores all measurements on the primary memory. Useful for ad-hoc tests.
 * `Librato`: uses [Librato](https://www.librato.com/) as a metrics provider.
+* `Redis`: stores all measurements in Redis.
 
 ### Installation
 
@@ -101,6 +103,24 @@ Note that Librato **does not support metric names with slashes**. If a metric na
 the synchronisation with Librato might fail due to this shortcoming. Make sure metric names include
 only non-blank characters and dots/underscores.
 
+### Redis provider
+
+Push all measurements to Redis DB
+Need to specify these config to make it works
+
+~~~ruby
+  Cubic.config do |c|
+    c.provider = :redis
+    c.provider_options = {
+      source: "cubic.redis",
+      namespace: "mornitoring",
+      url: "redis://localhost:6379/15"
+    }
+  end
+~~~
+
+Note: The `inc` function will not work correctly. Sometimes the queue is clear already, so we can't increase the pushed metric
+
 ### Configuration
 
 Cubic can be configured prior to its usage. To generate a default configuration file, run:
@@ -111,6 +131,27 @@ $ bundle exec cubic init
 
 On a Rails app, the above will create a `cubic.rb` file on `config/initializers`. On
 other environments, it will write its content to the standard output.
+
+### Worker mode
+
+We support the worker mode to push the measurements data from Redis DB to Librato.
+
+Use this command to run the worker: 
+
+~~~
+  cubic_worker -c /home/foouser/cubic/config.yml
+~~~
+
+Here is the sample of worker config
+
+~~~yml
+email: "webmaster@roomorama.com"
+api_key: "1213"
+source: "cubic.redis"
+queue_size: 1
+interval: 1
+url: "redis://localhost:6379"
+~~~
 
 *****
 

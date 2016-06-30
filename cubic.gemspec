@@ -16,6 +16,8 @@ Gem::Specification.new do |s|
   s.test_files = Dir["test/**/*"]
 
   s.add_dependency "librato-metrics", "~> 1.6.0"
+  s.add_development_dependency "redis"
+  s.add_development_dependency "byebug"
 
   s.add_development_dependency "rake"
   s.add_development_dependency "minitest"
