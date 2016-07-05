@@ -3,6 +3,21 @@ require 'cubic/redis_connection/pool'
 
 module Cubic
   module Workers
+    # The Base class for all workers
+    #
+    # @example
+    #
+    # require 'cubic'
+    #
+    # config = Cubic::Workers::Config.configure(path)
+    # Cubic::Workers::Base.new(config).start
+    # # will raise NotImplementedError
+    #
+    # There is Librato worker that inherit from Base
+    # and if we start this worker, it will run successfully
+    #
+    # Cubic::Workers::Librato.new(config).start
+    # # start the loops, load metrics and push to Librato
     class Base
       START_WORKER_MSG = "Starting the worker".freeze
 
@@ -17,8 +32,16 @@ module Cubic
         block.call if block
       end
 
+      # Start the worker, only implemented in children classes
+      #
+      # Checkout the Librato worker as an example
+      def start
+        raise NotImplementedError
+      end
+
       def perform(&block)
         log_info "Worker is starting..."
+
         loop do
           break if shutdown?
           sleep interval

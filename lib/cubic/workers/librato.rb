@@ -4,10 +4,20 @@ require_relative './config'
 module Cubic
   module Workers
     class Librato < Base
+      # Metric object store a list of metric names & values, getting from Redis
       Metric = Struct.new(:names, :values)
 
+      # The key pattern will be use to get all keys from Redis DB
       KEY_PATTERN = "*".freeze
 
+      # Start the worker
+      #
+      # Call the perform method in Base class, then execute these following tasks for
+      # each iteration
+      #
+      #   1. Load metrics from Redis
+      #   2. Log the metrics
+      #   3. Submit to Librato queue
       def start
         perform do
           metrics = load_redis_metrics
