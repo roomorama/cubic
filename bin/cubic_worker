@@ -5,6 +5,7 @@ $LOAD_PATH << File.join(__dir__, "../lib/")
 require "cubic"
 require "cubic/workers/librato"
 
+# specify config file
 if "-c" == ARGV[0]
   path = ARGV[1]
 end
