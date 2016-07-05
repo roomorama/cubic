@@ -1,6 +1,23 @@
 require 'yaml'
 require 'ostruct'
 
+# Worker configuration
+#    Can be config with a config_file, which is specified by a +path+,
+#    or a following +block+
+#
+# @example pass a config file
+#
+#   Cubic::Workers::Config.configure("/path_to_config/config_file.yml")
+#
+# @examle pass a block
+#
+#   Cubic::Workers::Config.configure do |c|
+#     c.email      = "admin@gmail.com"
+#     c.api_key    = "124"
+#     c.interval   = 1
+#     c.url        = "redis://localhost:6379/15"
+#     c.queue_size = 10
+#   end
 module Cubic
   module Workers
     class Config
