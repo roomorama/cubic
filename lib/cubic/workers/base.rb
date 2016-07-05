@@ -20,11 +20,13 @@ module Cubic
     # # start the loops, load metrics and push to Librato
     class Base
       START_WORKER_MSG = "Starting the worker".freeze
+      SHUTDOWN_TERM = "TERM".freeze
 
       attr_reader :config
 
       def initialize(config = {})
         @config = config
+        register_signal
       end
 
       # One time run - for testing
@@ -79,6 +81,12 @@ module Cubic
 
       def shutdown!
         @shutdown = true
+      end
+
+      def register_signal
+        Signal.trap(SHUTDOWN_TERM) do
+          shutdown!
+        end
       end
     end
   end
