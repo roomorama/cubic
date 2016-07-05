@@ -19,7 +19,7 @@ module Cubic
     # Cubic::Workers::Librato.new(config).start
     # # start the loops, load metrics and push to Librato
     class Base
-      START_WORKER_MSG = "Starting the worker".freeze
+      START_WORKER_MSG = "Worker is starting... PID: %<pid>s".freeze
       SHUTDOWN_TERM = "TERM".freeze
 
       attr_reader :config
@@ -42,7 +42,7 @@ module Cubic
       end
 
       def perform(&block)
-        log_info "Worker is starting..."
+        log_info START_WORKER_MSG % { pid: Process.pid}
 
         loop do
           break if shutdown?
