@@ -1,7 +1,9 @@
 require "setup"
 require "cubic/workers/librato"
 
-class Redis
+class RedisMock
+  def initialize(*);end
+
   def keys(*)
     ["foo", "bar"]
   end
@@ -9,6 +11,8 @@ class Redis
   def mget(*)
     [1, 2]
   end
+
+  def del(*);end
 end
 
 module Librato::Metrics
@@ -33,7 +37,8 @@ class TestBaseWorker < Minitest::Test
       email: "librato@example.org",
       api_key: "12345",
       source: "test",
-      namespace: "dev"
+      namespace: "dev",
+      klass: RedisMock
     }
 
     @worker = Cubic::Workers::Librato.new(config)
