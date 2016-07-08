@@ -20,8 +20,9 @@ module Cubic
         client = get_object
 
         result = block.call(client)
-        release(client)
         result
+      ensure
+        release(client)
       end
 
       def get_object
