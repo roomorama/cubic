@@ -19,14 +19,16 @@ module Cubic
       # Then do something with this connection object
       # Then return this object to the pool
       def use(&block)
-        client = get_object
+        begin
+          client = get_object
 
-        result = block.call(client)
-        result
-      rescue Exception => e
-        nil # TODO specify the Redis::ConnectionError instead
-      ensure
-        release(client)
+          result = block.call(client)
+          result
+        rescue Exception => e
+          nil # TODO specify the Redis::ConnectionError instead
+        ensure
+          release(client)
+        end
       end
 
       def get_object
