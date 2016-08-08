@@ -29,4 +29,13 @@ class TestRedis < Minitest::Test
     result = @redis_provider.val("dev.metric", 5)
     assert_equal ::Redis.result, ["dev.metric", 5]
   end
+
+  def test_time
+    result = @redis_provider.time("dev.metric") do
+      true
+    end
+
+    assert_equal ::Redis.result, ["dev.metric", 0]
+    assert_equal true, result
+  end
 end
