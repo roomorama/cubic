@@ -40,6 +40,15 @@ module Cubic
         end
       end
 
+      def time(label)
+        start = Time.now
+        result = yield
+      ensure
+        duration_in_ms = ((Time.now - start) * 1000).round
+        val(label, duration_in_ms)
+        result
+      end
+
       # DUPLICATE FOR NOW - WILL REFACTOR
       def namespaced(label)
         if @namespace
