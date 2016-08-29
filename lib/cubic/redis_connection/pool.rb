@@ -7,7 +7,8 @@ module Cubic
     class Pool
       SIZE = 5
       TIMEOUT = 1
-      RECONNECT_ATTEMPTS = 3
+      CONNECT_TIMEOUT = 1
+      RECONNECT_ATTEMPTS = 2
 
       def initialize(config = {})
         @url = config[:url]
@@ -32,7 +33,7 @@ module Cubic
       end
 
       def get_object
-        obj = can_spawn? ? @klass.new(url: @url, timeout: timeout, reconnect_attempts: reconnect_attempts) : _available.shift
+        obj = can_spawn? ? @klass.new(url: @url, timeout: timeout, connect_timeout: connect_timeout, reconnect_attempts: reconnect_attempts) : _available.shift
         raise NoMoreConnectionError unless obj
 
         _in_used << obj
@@ -65,11 +66,15 @@ module Cubic
       end
 
       def timeout
-        ENV['REDIS_TIMEOUT'] || TIMEOUT
+        ENV['CUBIC_REDIS_TIMEOUT'] || TIMEOUT
+      end
+
+      def connect_timeout
+        ENV['CUBIC_REDIS_CONNECT_TIMEOUT'] || CONNECT_TIMEOUT
       end
 
       def reconnect_attempts
-        ENV['REDIS_RECONNECT_ATTEMPTS'] || RECONNECT_ATTEMPTS
+        ENV['CUBIC_REDIS_RECONNECT_ATTEMPTS'] || RECONNECT_ATTEMPTS
       end
     end
   end
