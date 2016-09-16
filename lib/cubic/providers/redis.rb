@@ -4,6 +4,7 @@ module Cubic
   module Providers
     class Redis
       DEFAULT_URL = "redis://localhost:6379/15".freeze
+      SANITIZED_REGEX = /[^A-Za-z0-9|\.|\_|:|-]/
 
       attr_reader :pool
 
@@ -51,11 +52,17 @@ module Cubic
 
       # DUPLICATE FOR NOW - WILL REFACTOR
       def namespaced(label)
-        if @namespace
+        namespace = if @namespace
           [@namespace, label].join(".")
         else
           label
         end
+
+        sanitize namespace
+      end
+
+      def sanitize(namespace)
+        namespace.gsub(SANITIZED_REGEX, '')
       end
     end
   end
